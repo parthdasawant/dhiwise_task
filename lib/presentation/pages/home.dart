@@ -1,89 +1,202 @@
+import 'package:dhiwise_task/themes/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:primer_progress_bar/primer_progress_bar.dart';
+import 'package:syncfusion_flutter_gauges/gauges.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class Home extends StatefulWidget {
+  const Home({
+    super.key,
+  });
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<Home> createState() => _HomeState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
+class _HomeState extends State<Home> {
+  List<Segment> segments = const [
+    Segment(value: 15000, color: taskBlue, label: Text("Monthly Salary",style:TextStyle()), valueLabel: Text('\$15000')),
+    Segment(value: 3000, color: taskYellow, label: Text("Dividend"), valueLabel: Text('\$3000')),
+    Segment(value: 2000, color: taskCyan, label: Text("Rent "), valueLabel: Text('\$2000')),
+  ];
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: taskPurple,
+        body: Center(
+          child: ListView(children: [
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(25.0),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 10.0, 0,8),
+                    child: Column(
+                      children: [
+                        SfRadialGauge(
+                          enableLoadingAnimation: true,
+                          title: const GaugeTitle(
+                              text: "Buy a dream house",
+                              textStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 35)),
+                          axes: <RadialAxis>[
+
+                            RadialAxis(
+                                showLabels: false,
+                                showTicks: false,
+                                radiusFactor: 0.8,
+                                startAngle: 120,
+                                endAngle: 60,
+                                maximum: 300,
+                                // target
+                                axisLineStyle: const AxisLineStyle(color: taskBluishGray, thickness: 7),
+                                annotations: const <GaugeAnnotation>[
+                                  GaugeAnnotation(
+                                      angle: 90,
+                                      widget: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.home,
+                                            color: Colors.white,
+                                            size: 100,
+                                          ),
+                                          Column(
+                                            children: [
+                                              Text('\$25,000',
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 30,
+                                                      color: Colors.white)),
+                                              Text(
+                                                'You Saved',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 20,
+                                                    color: taskBluishGray),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      )),
+                                  GaugeAnnotation(
+                                    angle: 124,
+                                    positionFactor: 1.1,
+                                    widget: Text(
+                                      '',
+                                    ),
+                                  ),
+                                  GaugeAnnotation(
+                                    angle: 54,
+                                    positionFactor: 1.1,
+                                    widget: Text(
+                                      '',
+                                    ),
+                                  ),
+                                ],
+                                pointers: const <GaugePointer>[
+                                  RangePointer(
+                                    value: 130, //you saved
+                                    width: 7,
+                                    pointerOffset: 0,
+                                    color: Colors.white,
+                                  )
+                                ]),
+                          ],
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(left: 20.0, right: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                              Text("Goal", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+                              ),
+                              Text("by Jan 2030", style: TextStyle(color: taskBluishGray,),)
+                            ],),
+                            Text('\$25,000',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                    color: Colors.white)),
+                          ],),
+                        ),
+                        const SizedBox(height: 20,),
+                        Container(
+                          height: 80,
+                          decoration: const BoxDecoration(
+                            color: taskLightBlue,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ), //BorderRadius.all
+                        ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(20.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [Text("Need more savings", style: TextStyle(color: Colors.white)),
+                                Text("\$25,000", style: TextStyle(color: Colors.white))],
+                              ),Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [Text("Monthly Saving Projection", style: TextStyle(color: Colors.white)),
+                                  Text("\$250", style: TextStyle(color: Colors.white),)],
+                              ),],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20,),
+                Container(
+                  height: MediaQuery.sizeOf(context).height * 0.35,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(30),
+                    )
+                  ),
+                  child:  Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(left: 15, right: 15, bottom: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [Text("Contributions", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
+                          Text("Show History")],),
+                        ),
+                    PrimerProgressBar(
+                      segments: segments,
+                      legendStyle: SegmentedBarLegendStyle(spacing: MediaQuery.sizeOf(context).width, ),
+
+                      legendEllipsisBuilder: DefaultLegendEllipsisBuilder(
+                        segments: segments,
+                        color: Colors.grey,
+                        label: const Text("Other"),
+                        // [value] is the sum of [Segment.value]s for each legend item that is overflowed
+                        valueLabelBuilder: (value) => Text("${segments[value].valueLabel}%"),
+
+                      ),
+                    )
+                      ],
+                    ),
+                  ),
+                )
+              ],
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+          ]),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
