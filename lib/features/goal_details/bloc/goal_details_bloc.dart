@@ -19,9 +19,22 @@ class GoalDetailsBloc extends Bloc<GoalDetailsEvent, GoalDetailsState> {
 
   Future<FutureOr<void>> initialFetchEvent(InitialFetchEvent event, Emitter<GoalDetailsState> emit) async {
     var instance = FirebaseFirestore.instance;
-    Data data = await getData(instance);
-    List<Segment> segments = await getSegments(data);
-    emit(InitialGoalFetchSuccessState(data: data, segments: segments));
+    Data? data = await getData(instance);
+    if(data != null){
+      List<Segment>? segments = await getSegments(data);
+      List<String>? calcList = await getCalcList(data);
+      if(segments != null && calcList != null){
+        String totalAmount = calcList[0];
+        String target = calcList[1];
+        String needMore = calcList[2];
+        String monSaveProj = calcList[3];
+        emit(InitialGoalFetchSuccessState(data: data, segments: segments, calcList:calcList, totalAmount: totalAmount, target: target, needMore: needMore, monSaveProj: monSaveProj));
+      }else {
+        emit(InitialGoalFetchFailureState());
+      }
+    }else {
+      emit(InitialGoalFetchFailureState());
+    }
   }
 
 
