@@ -1,12 +1,19 @@
 # dhiwise_task
 
-Working demo of the task
+## Demo (gif may take time to load)
+### Working demo of the task
 
-<img src="https://github.com/parthdasawant/dhiwise_task/assets/80618762/a6d67a62-ad97-425c-b6ff-2f4de2060266" alt="gif1" width="300"/>
+Android 
+
+<img src="https://github.com/parthdasawant/dhiwise_task/assets/80618762/3f799251-aca2-43a0-ae55-e5395f156f39" alt="gif1" width="300"/>
+
+iOS
+
+<img src="https://github.com/parthdasawant/dhiwise_task/assets/80618762/ed6ef979-d92d-4536-b06c-044f981b7545" alt="gif1" width="300"/>
 
 <hr>
 
-After Updating the total amount this how it reacts 
+### After Updating the total amount this how it reacts 
 
 <img src="https://github.com/parthdasawant/dhiwise_task/assets/80618762/57cf59b3-562c-4779-8ae7-cba382131f79" alt="gif2" width="300"/>
 
