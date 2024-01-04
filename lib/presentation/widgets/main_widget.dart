@@ -33,7 +33,6 @@ class MainWidget extends StatelessWidget {
                   startAngle: 120,
                   endAngle: 60,
                   maximum: state.data.target.toDouble(),
-                  // target
                   axisLineStyle:
                   const AxisLineStyle(color: taskBluishGray, thickness: 7),
                   annotations: <GaugeAnnotation>[
@@ -42,21 +41,26 @@ class MainWidget extends StatelessWidget {
                         widget: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            const Icon(
+                            Icon(
                               Icons.home,
                               color: Colors.white,
-                              size: 100,
+                              size: MediaQuery.sizeOf(context).width * 0.25,
                             ),
                             Column(
                               children: [
                                 Text(state.totalAmount,
-                                    style: const TextStyle(
+                                    style:
+                                    // Theme.of(context).textTheme.displaySmall?.copyWith(color: Colors.white, fontWeight: FontWeight.bold)
+                                    const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 30,
-                                        color: Colors.white)),
-                                const Text(
+                                        color: Colors.white)
+                                ),
+                                Text(
                                   'You Saved',
-                                  style: TextStyle(
+                                  style:
+                                  // Theme.of(context).textTheme.titleLarge?.copyWith(color: taskBluishGray, fontWeight: FontWeight.bold)
+                                  TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20,
                                       color: taskBluishGray),
@@ -84,9 +88,11 @@ class MainWidget extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       "Goal",
-                      style: TextStyle(
+                      style:
+                      // Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.white , fontWeight: FontWeight.bold)
+                      TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 20),
@@ -100,10 +106,13 @@ class MainWidget extends StatelessWidget {
                   ],
                 ),
                 Text(state.target,
-                    style: const TextStyle(
+                    style:
+                    // Theme.of(context).textTheme.headlineMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.bold)
+                    const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
-                        color: Colors.white)),
+                        color: Colors.white)
+                ),
               ],
             ),
           ),
@@ -111,7 +120,7 @@ class MainWidget extends StatelessWidget {
             height: 20,
           ),
           Container(
-            height: 80,
+            height: MediaQuery.sizeOf(context).height * 0.10,
             decoration: const BoxDecoration(
               color: taskLightBlue,
               borderRadius: BorderRadius.all(

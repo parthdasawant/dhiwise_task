@@ -22,17 +22,17 @@ Future<List<Segment>>? getSegments(Data data) async{
         value: data.contributions.salary,
         color: taskBlue,
         label: data.contributions.salary>=10000? const Text("Monthly Salary"): const Text("Monthly Salary  "),
-        valueLabel: Text('${'\t' *40}\$${formatter.format(data.contributions.salary)}')),
+        valueLabel: Text('${'\t' *35}\$${formatter.format(data.contributions.salary)}')),
     Segment(
         value: data.contributions.dividend,
         color: taskYellow,
         label: const Text("Dividend"),
-        valueLabel: Text('${'\t' *53}\$${formatter.format(data.contributions.dividend)}')),
+        valueLabel: Text('${'\t' *48}\$${formatter.format(data.contributions.dividend)}')),
     Segment(
         value: data.contributions.rent,
         color: taskCyan,
         label: const Text("Rent"),
-        valueLabel: Text('${'\t' *60}\$${formatter.format(data.contributions.rent)}')),
+        valueLabel: Text('${'\t' *55}\$${formatter.format(data.contributions.rent)}')),
   ];
   return segments;
 }
