@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dhiwise_task/presentation/pages/somethingWentWrongScreen.dart';
 import 'package:dhiwise_task/themes/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:primer_progress_bar/primer_progress_bar.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../features/goal_details/bloc/goal_details_bloc.dart';
 import '../../features/goal_details/models/datamodel.dart';
 
 class Home extends StatefulWidget {
@@ -16,12 +19,26 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final GoalDetailsBloc bloc = GoalDetailsBloc();
   List<Segment> segments = const [
-    Segment(value: 15000, color: taskBlue, label: Text("Monthly Salary",style:TextStyle()), valueLabel: Text('\$15000')),
-    Segment(value: 3000, color: taskYellow, label: Text("Dividend"), valueLabel: Text('\$3000')),
-    Segment(value: 2000, color: taskCyan, label: Text("Rent"), valueLabel: Text('\$2000')),
+    Segment(
+        value: 15000,
+        color: taskBlue,
+        label: Text("Monthly Salary", style: TextStyle()),
+        valueLabel: Text('\$15000')),
+    Segment(
+        value: 3000,
+        color: taskYellow,
+        label: Text("Dividend"),
+        valueLabel: Text('\$3000')),
+    Segment(
+        value: 2000,
+        color: taskCyan,
+        label: Text("Rent"),
+        valueLabel: Text('\$2000')),
   ];
   List<Color> colorsList = [taskBlue, taskYellow, taskCyan];
+  var date;
 
   Future<void> getData() async {
     var db = FirebaseFirestore.instance;
@@ -29,42 +46,60 @@ class _HomeState extends State<Home> {
       Data tempData;
       for (var doc in event.docs) {
         print("${doc.id} => ${doc.data()}");
-        tempData =  Data.fromJson(doc.data());
+        tempData = Data.fromJson(doc.data());
         print(tempData.totalAmount);
         print(tempData.target);
         print(tempData.expectedCompletionDate.toDate());
         print(tempData.contributions);
+        date = tempData.expectedCompletionDate.toDate();
       }
-
     });
   }
 
- @override
+  @override
   void initState() {
-    getData();
+    // getData();
+    bloc.add(InitialFetchEvent());
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         backgroundColor: taskPurple,
-        body: Center(
-          child: ListView(children: [
-            Column(
-              children: [
-                const MainWidget(),
-                const SizedBox(height: 20,),
-                ContributionWidget(segments: segments)
-              ],
-            ),
-          ]),
+        body: BlocConsumer<GoalDetailsBloc, GoalDetailsState>(
+          bloc: bloc,
+          buildWhen: (previous, current) => current is! GoalDetailsActionState,
+          listenWhen: (previous, current) => current is GoalDetailsActionState,
+          listener: (context, state) {},
+          builder: (context, state) {
+            if (state is InitialGoalFetchSuccessState) {
+              return Center(
+                child: ListView(children: [
+                  Column(
+                    children: [
+                      const MainWidget(),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      ContributionWidget(segments: state.segments)
+                    ],
+                  ),
+                ]),
+              );
+            }
+            else if (state is InitialGoalFetchFailureState){
+              return const SomethingWentWrongScreen();
+            }
+            else{
+              return const Center(child: CircularProgressIndicator());
+            }
+          },
         ),
       ),
     );
   }
-
-
 }
 
 class MainWidget extends StatelessWidget {
@@ -87,7 +122,6 @@ class MainWidget extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     fontSize: 35)),
             axes: <RadialAxis>[
-
               RadialAxis(
                   showLabels: false,
                   showTicks: false,
@@ -96,7 +130,8 @@ class MainWidget extends StatelessWidget {
                   endAngle: 60,
                   maximum: 300,
                   // target
-                  axisLineStyle: const AxisLineStyle(color: taskBluishGray, thickness: 7),
+                  axisLineStyle:
+                      const AxisLineStyle(color: taskBluishGray, thickness: 7),
                   annotations: const <GaugeAnnotation>[
                     GaugeAnnotation(
                         angle: 90,
@@ -156,42 +191,68 @@ class MainWidget extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                Text("Goal", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Goal",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20),
+                    ),
+                    Text(
+                      "by Jan 2030",
+                      style: TextStyle(
+                        color: taskBluishGray,
+                      ),
+                    )
+                  ],
                 ),
-                Text("by Jan 2030", style: TextStyle(color: taskBluishGray,),)
-              ],),
-              Text('\$25,000',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: Colors.white)),
-            ],),
+                Text('\$25,000',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Colors.white)),
+              ],
+            ),
           ),
-          const SizedBox(height: 20,),
+          const SizedBox(
+            height: 20,
+          ),
           Container(
             height: 80,
             decoration: const BoxDecoration(
               color: taskLightBlue,
-            borderRadius: BorderRadius.all(
-              Radius.circular(10),
-            ), //BorderRadius.all
-          ),
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ), //BorderRadius.all
+            ),
             child: const Padding(
               padding: EdgeInsets.all(20.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [Text("Need more savings", style: TextStyle(color: Colors.white)),
-                  Text("\$25,000", style: TextStyle(color: Colors.white))],
-                ),Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [Text("Monthly Saving Projection", style: TextStyle(color: Colors.white)),
-                    Text("\$250", style: TextStyle(color: Colors.white),)],
-                ),],
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Need more savings",
+                          style: TextStyle(color: Colors.white)),
+                      Text("\$25,000", style: TextStyle(color: Colors.white))
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Monthly Saving Projection",
+                          style: TextStyle(color: Colors.white)),
+                      Text(
+                        "\$250",
+                        style: TextStyle(color: Colors.white),
+                      )
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
@@ -214,12 +275,11 @@ class ContributionWidget extends StatelessWidget {
     return Container(
       height: MediaQuery.sizeOf(context).height * 0.35,
       decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(30),
-        )
-      ),
-      child:  Padding(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(30),
+          )),
+      child: Padding(
         padding: const EdgeInsets.all(32.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -228,22 +288,29 @@ class ContributionWidget extends StatelessWidget {
               padding: EdgeInsets.only(left: 15, right: 15, bottom: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [Text("Contributions", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
-              Text("Show History")],),
+                children: [
+                  Text(
+                    "Contributions",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+                  Text("Show History")
+                ],
+              ),
             ),
-        PrimerProgressBar(
-          segments: segments,
-          legendStyle: SegmentedBarLegendStyle(spacing: MediaQuery.sizeOf(context).width, ),
-
-          legendEllipsisBuilder: DefaultLegendEllipsisBuilder(
-            segments: segments,
-            color: Colors.grey,
-            label: const Text("Other"),
-            // [value] is the sum of [Segment.value]s for each legend item that is overflowed
-            valueLabelBuilder: (value) => Text("${segments[value].valueLabel}%"),
-
-          ),
-        )
+            PrimerProgressBar(
+              segments: segments,
+              legendStyle: SegmentedBarLegendStyle(
+                spacing: MediaQuery.sizeOf(context).width,
+              ),
+              legendEllipsisBuilder: DefaultLegendEllipsisBuilder(
+                segments: segments,
+                color: Colors.grey,
+                label: const Text("Other"),
+                // [value] is the sum of [Segment.value]s for each legend item that is overflowed
+                valueLabelBuilder: (value) =>
+                    Text("${segments[value].valueLabel}%"),
+              ),
+            )
           ],
         ),
       ),
